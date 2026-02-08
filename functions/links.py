@@ -18,24 +18,23 @@ def add_link_sources(source_type: str, urls: list, page) -> None:
 
         if i == is_first:
 
-            new_notebook_button = page.get_by_role("button", name="Create new notebook")
+            new_notebook_button = page.get_by_role("button", name="Create new")
             new_notebook_button.wait_for(state="attached")
             new_notebook_button.click()
 
         link_button = page.locator(
-            "span.mdc-evolution-chip__text-label", has_text=re.compile(f"{source_type}",re.I)
+            "button.drop-zone-icon-button", has_text=re.compile(r"websites", re.I)
         )
         link_button.wait_for(state="attached")
         link_button.click()
 
-        link_url_input = page.locator("[formcontrolname='newUrl']")
+        link_url_input = page.locator("[formcontrolname='urls']")
         link_url_input.wait_for(state="attached")
         link_url_input.fill(u)
 
         insert_button = page.get_by_role("button", name="Insert")
         expect(insert_button).to_be_enabled()
         insert_button.click()
-        # page.keyboard.press("Enter")
 
         source_container = page.locator("div.single-source-container").last
         source_container.wait_for(state="attached")
@@ -53,7 +52,7 @@ def add_link_sources(source_type: str, urls: list, page) -> None:
 
         if i < is_last:
 
-            add_source_button = page.get_by_role("button", name="Add source")
+            add_source_button = page.get_by_role("button", name=re.compile(r"Add source", re.I))
             add_source_button.wait_for(state="attached")
             add_source_button.click()
 
