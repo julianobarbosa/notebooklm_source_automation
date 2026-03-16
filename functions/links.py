@@ -42,11 +42,9 @@ def add_link_sources(source_type: str, urls: list, page) -> None:
         loading_spinner = source_container.locator(".mat-mdc-progress-spinner")
         loading_spinner.wait_for(state="detached")
 
-        checkbox = source_container.locator(
-            "input.mdc-checkbox__native-control.mdc-checkbox--selected"
-        )
+        checkbox = source_container.locator("input[type='checkbox']")
         checkbox.wait_for(state="attached")
-        expect(checkbox).not_to_have_attribute("ariaLabel", u)
+        expect(checkbox).to_be_checked(timeout=30000)
 
         page.wait_for_timeout(1200)
 
