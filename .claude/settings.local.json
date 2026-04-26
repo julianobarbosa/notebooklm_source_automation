@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__notebooklm-rpc__notebook_get",
+      "mcp__notebooklm-rpc__source_delete",
+      "mcp__notebooklm-rpc__notebook_add_url",
+      "mcp__notebooklm-rpc__notebook_list",
+      "mcp__notebooklm-rpc__notebook_describe",
+      "mcp__notebooklm-rpc__source_get_content",
+      "mcp__notebooklm-rpc__audio_overview_create",
+      "mcp__plugin_repomix-mcp_repomix__pack_remote_repository",
+      "mcp__plugin_repomix-mcp_repomix__read_repomix_output",
+      "mcp__plugin_repomix-mcp_repomix__grep_repomix_output",
+      "mcp__notebooklm-rpc__notebook_create",
+      "mcp__notebooklm-rpc__notebook_query",
+      "mcp__notebooklm-rpc__notebook_add_text",
+      "mcp__notebooklm-rpc__studio_status",
+      "mcp__notebooklm-rpc__quiz_create",
+      "mcp__notebooklm-rpc__infographic_create",
+      "mcp__notebooklm-rpc__mind_map_create",
+      "mcp__notebooklm-rpc__flashcards_create",
+      "mcp__notebooklm-rpc__slide_deck_create",
+      "mcp__notebooklm-rpc__report_create",
+      "mcp__notebooklm-rpc__data_table_create"
+    ]
+  }
+}
