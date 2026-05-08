@@ -5,7 +5,10 @@
       "mcp__plugin_repomix-mcp_repomix__read_repomix_output",
       "mcp__plugin_repomix-mcp_repomix__grep_repomix_output",
       "Bash(mkdir -p ~/.claude/PAI/MEMORY/KNOWLEDGE/Ideas)",
-      "Bash(cat)"
+      "Bash(cat)",
+      "Bash(curl -s -X POST http://localhost:31337/notify -H \"Content-Type: application/json\" -d '{\"message\": \"Entering the Algorithm\", \"voice_id\": \"fTtv3eikoepIosk8dTZ5\", \"voice_enabled\": true}')",
+      "Bash(curl -s -X POST http://localhost:31337/notify -H \"Content-Type: application/json\" -d '{\"message\": \"Entering the Observe phase.\", \"voice_id\": \"fTtv3eikoepIosk8dTZ5\", \"voice_enabled\": true}')",
+      "Bash(mkdir -p ~/.claude/PAI/MEMORY/WORK/notebooklm-karpathy-vibe-studio)"
     ]
   }
 }
