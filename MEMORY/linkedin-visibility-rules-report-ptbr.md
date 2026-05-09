@@ -122,3 +122,81 @@ notebooklm source list -n 6fe5f866-8c9e-4b98-83e9-78c711b4fc5e --json
 # Continuar a conversa com follow-ups
 notebooklm ask "<próxima pergunta em pt-BR>" -c 70a7cbdc-cc7c-4fb1-84fc-ea2f04e77f2e
 ```
+
+---
+
+## 8. Mapeamento de Citações → Fontes
+
+> Atualização incremental — adendo executado após o relatório principal.
+
+### Metodologia e limites honestos
+
+**O que tentamos:** mapear cada faixa `[1]` a `[47]` da resposta original (turn 2) para as fontes correspondentes do notebook.
+
+**O que descobrimos:**
+
+- O comando `notebooklm history --json --show-all` devolve apenas `question`/`answer`/`turn` por turno. **Não expõe o array `references`** que carrega o `source_id` por `citation_number`. O CLI atual não tem rota para "dame as references do turn N retroativamente".
+- Apenas `notebooklm ask --json` retorna `references` — e essas referências pertencem **ao turno recém-executado**, não a turnos passados.
+- Resultado: as faixas `[1]`-`[47]` da §5 (resposta verbatim do turn 2) **não são recuperáveis** a partir do CLI. O melhor que podemos fazer é re-executar a pergunta e capturar as references do novo turno, sabendo que a numeração pode diferir.
+
+**O que fizemos:** re-fire da mesma pergunta sob o mesmo `conversation_id` (`70a7cbdc-...`), gerando o turn 3 com uma resposta condensada (`[1]`-`[7]`, uma citação por regra). Capturamos as references desse turn — esse é o mapeamento confiável que segue abaixo.
+
+### Comando exato (turn 3)
+
+```bash
+notebooklm ask "Liste em ordem: para cada uma das 7 regras de visibilidade do LinkedIn (Headline, Bilíngue, About, Experience, Skills, Recomendações, Engajamento), cite UMA fonte com o ID inline. Não explique nada além de citar." \
+  -c 70a7cbdc-cc7c-4fb1-84fc-ea2f04e77f2e \
+  -n 6fe5f866-8c9e-4b98-83e9-78c711b4fc5e \
+  --json
+```
+
+### Fontes canônicas para visibilidade do perfil LinkedIn
+
+O turn 3 retornou **38 references** apontando para apenas **5 source IDs únicos** — esse é o conjunto autoritativo para o tema "visibilidade de perfil LinkedIn" dentro do notebook (de 174 sources totais).
+
+| Source index | Source ID | Título | URL |
+|---|---|---|---|
+| 49 | `bb46d8bb-f343-4d8f-b05e-0165a86f86ec` | Estratégias Avançadas de Otimização de Perfil LinkedIn para Engenheiros DevOps, SRE e Especialistas Azure no Brasil | _(documento interno do notebook — sem URL)_ |
+| 102 | `6207a5c8-b2e6-4500-9332-eb38894d4aff` | LinkedIn Profile Optimization for Recruiters in 2026: What Actually Works Now - RecruitBPM | https://recruitbpm.com/blog/10-strategies-to-maximize-your-linkedin-profiles |
+| 103 | `62738371-42cc-4b9a-95cb-8a0132d1befb` | LinkedIn Profile Tips 2026: 7 Recruiter-Tested Fixes (3x Inbound) \| OphyAI Blog | https://ophyai.com/blog/resume-writing/linkedin-profile-optimization-job-search |
+| 105 | `007187a1-931d-460a-a65c-1f7cab533d93` | LinkedIn Recommendation Examples: 40+ Templates by Relationship - Resume Optimizer | https://resumeoptimizerpro.com/blog/linkedin-recommendation-examples |
+| 110 | `8bc24a71-e567-44c5-9910-05b935bb296b` | LinkedIn for Job Seekers: Recruiter-Ready Guide (2026) \| LinkedInRank | https://linkedinrank.com/for-jobseekers |
+
+**Observação importante**: a fonte de índice 49 (sem URL) é um documento pt-BR específico ao contexto BR / DevOps / SRE / Azure. É a única fonte do conjunto que cobre simultaneamente o público (engenheiros brasileiros) e o nicho (DevOps/Azure) — provavelmente por isso ela aparece como referência primária para várias regras.
+
+### Mapeamento por regra (turn 3 — confiável)
+
+| Regra | Citação `[N]` (turn 3) | Source ID | Source title (curto) |
+|---|---|---|---|
+| 1. Headline | `[1]` | `8bc24a71...` | LinkedIn for Job Seekers (LinkedInRank) |
+| 2. Bilíngue | `[2]` | `8bc24a71...` | LinkedIn for Job Seekers (LinkedInRank) |
+| 3. About | `[3]` | `bb46d8bb...` | Estratégias Avançadas BR (interno) |
+| 4. Experience | `[4]` | `bb46d8bb...` | Estratégias Avançadas BR (interno) |
+| 5. Skills | `[5]` | `8bc24a71...` | LinkedIn for Job Seekers (LinkedInRank) |
+| 6. Recomendações | `[6]` | `bb46d8bb...` | Estratégias Avançadas BR (interno) |
+| 7. Engajamento | `[7]` | `bb46d8bb...` | Estratégias Avançadas BR (interno) |
+
+**Padrão observado**: 4 das 7 regras citam o documento interno BR (`bb46d8bb...`); as outras 3 citam o guia LinkedInRank (`8bc24a71...`). As fontes 102, 103, 105 estão no pool de candidatos `[8]`-`[38]` mas não foram escolhidas como citação primária neste turno condensado.
+
+### Mapeamento aproximado para a §5 (turn 2 — heurístico)
+
+A resposta original (§5) tem 47 marcadores `[N]` distribuídos por 7 blocos. Como NÃO temos acesso ao `references` desse turno, o melhor que podemos oferecer é uma **atribuição heurística por bloco** baseada nas 5 fontes canônicas acima:
+
+| Bloco da §5 | Faixa `[N]` no verbatim | Fonte primária provável | Fonte secundária provável |
+|---|---|---|---|
+| 1. Engenharia do Headline | `[1-8]` | `8bc24a71` (LinkedInRank) | `bb46d8bb` (BR interno) |
+| 2. Arquitetura bilíngue | `[9-16]` | `bb46d8bb` (BR interno — único pt-BR/BR) | `62738371` (OphyAI) |
+| 3. Otimização do About | `[17-22]` | `bb46d8bb` (BR interno) | `6207a5c8` (RecruitBPM) |
+| 4. Experience STAR/XYZ | `[23-27]` | `8bc24a71` (LinkedInRank) | `bb46d8bb` (BR interno) |
+| 5. Gestão de Skills | `[28-33]` | `bb46d8bb` (BR interno) | `8bc24a71` (LinkedInRank) |
+| 6. Recomendações | `[34-40]` | `007187a1` (Resume Optimizer — único focado em recomendações) | `bb46d8bb` (BR interno) |
+| 7. Visibilidade & engajamento | `[40-47]` | `6207a5c8` (RecruitBPM) | `62738371` (OphyAI) |
+
+> ⚠️ **Esta tabela é heurística, não verificada**. Foi construída cruzando o tema de cada bloco com o foco temático do título de cada fonte canônica. Para mapeamento estritamente verificado faixa-a-faixa, seria preciso (a) extensão do CLI para expor references históricas, OU (b) abrir cada citação manualmente na UI da NotebookLM.
+
+### Lacuna pendente
+
+Esta lacuna é estrutural do CLI atual (`notebooklm-py v0.3.4`), não da nossa execução. Vale considerar:
+
+- [ ] **Issue upstream em `notebooklm-py`**: solicitar flag `notebooklm history --json --show-references` que faça GET dos `references` por turno. Se a API interna do NotebookLM expõe (e ela tem que expor — a UI mostra), é só wrap.
+- [ ] **Workaround manual**: para regras de alta prioridade na aplicação ao perfil (§3), abrir o notebook na UI e clicar nas faixas críticas (`[1-3]`, `[34-36]`, `[40-42]`) para ver as fontes reais antes de aplicar mudanças no perfil.
