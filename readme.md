@@ -121,4 +121,13 @@ This will prompt you to provide two things in the terminal:
 
 Please feel free to leave any feeback or suggestions for improvement. If you spot any issues, let me know and I'll endeavour to address them as soon as I can!
 
+<h2>Development checks</h2>
+
+Install `pre-commit` and enable the repository's Gitleaks secret scan before committing:
+
+```shell
+pip install pre-commit
+pre-commit install
+```
+
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
