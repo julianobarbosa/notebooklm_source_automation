@@ -123,11 +123,15 @@ Please feel free to leave any feeback or suggestions for improvement. If you spo
 
 <h2>Development checks</h2>
 
-Install `pre-commit` and enable the repository's Gitleaks secret scan before committing:
+For development, activate the project virtual environment and install the pinned tooling, then install the hook and its environment:
 
 ```shell
-pip install pre-commit
-pre-commit install
+python -m pip install -r requirements-dev.txt
+pre-commit install --install-hooks
 ```
+
+The local hook scans staged changes only; it does not scan commit messages, unstaged files, or existing history. The Gitleaks workflow runs on pull requests and pushes to `main`. For a manual scan of the current files, install the Gitleaks CLI and run `gitleaks dir .`; to scan Git history, run `gitleaks git --log-opts="--all"`.
+
+If Gitleaks finds a real credential, revoke or rotate it immediately; deleting it from the current file does not invalidate it or remove it from history. Handle false positives with a narrowly scoped, reviewed Gitleaks allowlist rather than disabling the hook. Review Gitleaks releases monthly; use `pre-commit autoupdate --freeze` for the hook, then update `GITLEAKS_VERSION` and the pinned Action revision together.
 
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
