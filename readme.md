@@ -130,7 +130,7 @@ python -m pip install -r requirements-dev.txt
 pre-commit install --install-hooks
 ```
 
-No separate Go installation is required: the pinned pre-commit version bootstraps Go for Gitleaks' upstream `golang` hook. `--install-hooks` does that setup immediately, so GitHub access is needed during installation rather than on the first commit.
+No separate Go installation is required: pre-commit bootstraps the configured Go 1.25.4 toolchain for Gitleaks' upstream `golang` hook. `--install-hooks` does that setup immediately, so GitHub access is needed during installation rather than on the first commit.
 
 The local hook scans staged changes only; it does not scan commit messages, unstaged files, or existing history. The Gitleaks workflow runs on pull requests and pushes to `main`. For a manual scan of the current files, install the Gitleaks CLI and run `gitleaks dir .`; to scan Git history, run `gitleaks git --log-opts="--all"`.
 
