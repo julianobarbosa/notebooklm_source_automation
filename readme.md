@@ -121,4 +121,19 @@ This will prompt you to provide two things in the terminal:
 
 Please feel free to leave any feeback or suggestions for improvement. If you spot any issues, let me know and I'll endeavour to address them as soon as I can!
 
+<h2>Development checks</h2>
+
+For development, activate the project virtual environment and install the pinned tooling, then install the hook and its environment:
+
+```shell
+python -m pip install -r requirements-dev.txt
+pre-commit install --install-hooks
+```
+
+No separate Go installation is required: pre-commit bootstraps the configured Go 1.25.4 toolchain for Gitleaks' upstream `golang` hook. `--install-hooks` does that setup immediately, so GitHub access is needed during installation rather than on the first commit.
+
+The local hook scans staged changes only; it does not scan commit messages, unstaged files, or existing history. The Gitleaks workflow runs on pull requests and pushes to `main`. For a manual scan of the current files, install the Gitleaks CLI and run `gitleaks dir .`; to scan Git history, run `gitleaks git --log-opts="--all"`.
+
+If Gitleaks finds a real credential, revoke or rotate it immediately; deleting it from the current file does not invalidate it or remove it from history. Handle false positives with a narrowly scoped, reviewed Gitleaks allowlist rather than disabling the hook. Review Gitleaks releases monthly; use `pre-commit autoupdate --freeze` for the hook, then update `GITLEAKS_VERSION` and the pinned Action revision together.
+
 <p align="right">(<a href="#readme-top">Back to top</a>)</p>
